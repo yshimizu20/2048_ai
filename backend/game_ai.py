@@ -51,15 +51,19 @@ class MonteCarloPolicy(Policy):
         continue
 
       board.add_new_tile()
-      new_board = board
       scores[MOVES.index(direction)] += score
       
       for _ in range(self.searches_per_move):
         move_iter = 1
         game_is_valid = True
+        new_board = board.copy()
 
         while game_is_valid and move_iter < self.search_length:
-          new_board, score, is_changed = new_board.random_play()
+          new_board, score, game_is_valid = new_board.random_play()
+          if not game_is_valid:
+            break
+          if not new_board.add_new_tile():
+            break
           scores[MOVES.index(direction)] += score
           move_iter += 1
       

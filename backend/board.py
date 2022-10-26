@@ -100,3 +100,6 @@ class Board(np.ndarray):
         return new_board, score, True
     
     return self, 0, False
+  
+  def __copy__(self):
+    return Board(self)
