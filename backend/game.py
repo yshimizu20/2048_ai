@@ -34,7 +34,10 @@ class Game:
     return self.win in self.board
 
   def make_move(self, direction):
-    return self.board.make_move(direction)
+    new_board, score, is_changed = self.board.make_move(direction)
+    self.board = new_board
+
+    return score, is_changed
 
   def random_play(self):
     new_board, score, is_changed = self.board.random_play()

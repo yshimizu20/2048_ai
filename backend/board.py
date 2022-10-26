@@ -90,7 +90,8 @@ class Board(np.ndarray):
     return True
 
   def random_play(self):
-    move_priority = random.shuffle([0, 1, 2, 3])
+    move_priority = [0, 1, 2, 3]
+    random.shuffle(move_priority)
 
     while len(move_priority):
       move_index = move_priority.pop()
