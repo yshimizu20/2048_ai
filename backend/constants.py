@@ -1,6 +1,7 @@
 import numpy as np
 
 POSSIBLE_MOVES_COUNT = 4
+MOVES = ["up", "right", "left", "down"]
 CELL_COUNT = 4
 NEW_TILE_DISTRIBUTION = np.array([2, 2, 2, 2, 2, 2, 2, 2, 2, 4])
 

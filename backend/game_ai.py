@@ -1,9 +1,21 @@
-from game import Game
 from constants import *
+from game import Game
 
-class MonteCarloPolicy(Game):
-  moves = ["up", "down", "left", "right"]
+class Policy():
+  def __init__(self):
+    self.game = Game()
 
+  def best_move(self):
+    raise NotImplementedError
+
+  def evaluate_move(self, direction):
+    raise NotImplementedError
+
+  def evaluate_board(self):
+    raise NotImplementedError
+
+
+class MonteCarloPolicy(Policy):
   def __init__(self):
     super().__init__()
 
@@ -13,6 +25,6 @@ class MonteCarloPolicy(Game):
 
   def best_move(self):
     pass
-  
+
   def evaluate_board(self):
     pass

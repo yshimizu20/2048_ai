@@ -1,103 +1,47 @@
 from constants import *
+from board import Board
+import random
 
 class Game:
   def __init__(self, win=WIN_VALUE):
     self.win = win
-    self.board = np.zeros((CELL_COUNT, CELL_COUNT), dtype=int)
+    self.board = Board()
     self.add_new_tile()
 
   def run(self):
+    is_changed = True
+
     while True:
       if self.check_win():
         print("You win!")
         return
       
-      if not self.add_new_tile():
+      if is_changed and not self.add_new_tile():
         print("Game over")
         return
 
       print(self.board)
       direction = input("")
-      self.make_move(direction)
+      new_board, score, is_changed = self.make_move(direction)
+      if is_changed:
+        self.board = new_board
 
-  def add_new_tile(self, n=1):
-    for _ in range(n):
-      row_options, col_options = np.nonzero(np.logical_not(self.board))
-      if len(row_options) == 0:
-        return False
-
-      idx = np.random.randint(0, len(row_options))
-      self.board[row_options[idx], col_options[idx]] = self.tile_init()
-
-    return True
-
-  def tile_init(self):
-    return np.random.choice(NEW_TILE_DISTRIBUTION)
+  def add_new_tile(self):
+    return self.board.add_new_tile()
 
   def check_win(self):
     return self.win in self.board
 
-  def push_right(self):
-    new_board = np.zeros((CELL_COUNT, CELL_COUNT), dtype=int)
-    is_changed = False
-
-    for row in range(CELL_COUNT):
-      idx = CELL_COUNT - 1
-      for col in range(CELL_COUNT - 1, -1, -1):
-        if self.board[row, col] != 0:
-          new_board[row, idx] = self.board[row, col]
-          if col != idx:
-            is_changed = True
-          idx -= 1
-    
-    self.board = new_board
-    return is_changed
-
-  def merge_right(self):
-    score = 0
-    is_changed = False
-
-    for row in range(CELL_COUNT):
-      for col in range(CELL_COUNT - 1, 0, -1):
-        if self.board[row, col] == self.board[row, col - 1] and self.board[row, col] != 0:
-          self.board[row, col] *= 2
-          self.board[row, col - 1] = 0
-          score += self.board[row, col]
-          is_changed = True
-
-    return score, is_changed
-
-  def right_move(self):
-    is_changed = self.push_right()
-    score, is_changed2 = self.merge_right()
-    is_changed = is_changed or is_changed2
-    if is_changed:
-      self.push_right()
-    
-    return score, is_changed
-
   def make_move(self, direction):
-    if direction == "right":
-      score, is_changed = self.right_move()
-    elif direction == "up":
-      self.board = np.rot90(self.board, -1)
-      score, is_changed = self.right_move()
-      self.board = np.rot90(self.board)
-    elif direction == "left":
-      self.board = np.rot90(self.board, 2)
-      score, is_changed = self.right_move()
-      self.board = np.rot90(self.board, 2)
-    elif direction == "down":
-      self.board = np.rot90(self.board)
-      score, is_changed = self.right_move()
-      self.board = np.rot90(self.board, -1)
-    else:
-      raise ValueError("Invalid direction")
+    return self.board.make_move(direction)
+
+  def random_play(self):
+    move_priority = random.shuffle([0, 1, 2, 3])
+
+    while len(move_priority):
+      move_index = move_priority.pop()
+      score, is_changed = self.make_move(MOVES[move_index])
+      if is_changed:
+        return score, True
     
-    return score, is_changed
-
-  def best_move(self):
-    raise NotImplementedError
-
-  def evaluate_board(self):
-    raise NotImplementedError
+    return 0, False
