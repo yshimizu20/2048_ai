@@ -39,9 +39,8 @@ class MonteCarloPolicy(Policy):
   def __init__(self):
     super().__init__()
 
-    self.spm_scale_param = 20
-    self.sl_scale_param = 4
-    self.search_param = 200
+    self.searches_per_move = 200
+    self.search_length = 15
 
   def best_move(self):
     scores = np.zeros(POSSIBLE_MOVES_COUNT)
@@ -72,8 +71,4 @@ class MonteCarloPolicy(Policy):
     pass
 
   def misc(self):
-    self.calculate_params()
-
-  def calculate_params(self):
-    self.searches_per_move = self.spm_scale_param * (1 + (self.moves // self.search_param))
-    self.search_length = self.sl_scale_param * (1 + (self.moves // self.search_param))
+    pass
