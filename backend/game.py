@@ -1,12 +1,11 @@
 from constants import *
 from board import Board
-import random
 
 class Game:
   def __init__(self, win=WIN_VALUE):
     self.win = win
     self.board = Board()
-    self.add_new_tile()
+    self.add_new_tile(2)
 
   def run(self):
     is_changed = True
@@ -15,18 +14,20 @@ class Game:
       if self.check_win():
         print("You win!")
         return
-      
-      if is_changed and not self.add_new_tile():
-        print("Game over")
-        return
 
       print(self.board)
       direction = input("")
       new_board, score, is_changed = self.make_move(direction)
       if is_changed:
         self.board = new_board
+        if not self.add_new_tile():
+          print("Game over")
+          return
 
-  def add_new_tile(self):
+  def add_new_tile(self, n=1):
+    for _ in range(n-1):
+      self.board.add_new_tile()
+
     return self.board.add_new_tile()
 
   def check_win(self):
@@ -36,12 +37,7 @@ class Game:
     return self.board.make_move(direction)
 
   def random_play(self):
-    move_priority = random.shuffle([0, 1, 2, 3])
+    new_board, score, is_changed = self.board.random_play()
+    self.board = new_board
 
-    while len(move_priority):
-      move_index = move_priority.pop()
-      score, is_changed = self.make_move(MOVES[move_index])
-      if is_changed:
-        return score, True
-    
-    return 0, False
+    return score, is_changed

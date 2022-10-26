@@ -1,5 +1,6 @@
 import numpy as np
 from constants import *
+import random
 
 class Board(np.ndarray):
   def __new__(cls, input_array=None):
@@ -60,7 +61,7 @@ class Board(np.ndarray):
   def make_move(self, direction):
     if direction == "right":
       new_board, score, is_changed = self.right_move()
-    elif direction == "up":
+    elif direction == "down":
       new_board = np.rot90(self)
       new_board, score, is_changed = new_board.right_move()
       new_board = np.rot90(new_board, -1)
@@ -68,7 +69,7 @@ class Board(np.ndarray):
       new_board = np.rot90(self, 2)
       new_board, score, is_changed = new_board.right_move()
       new_board = np.rot90(new_board, 2)
-    elif direction == "down":
+    elif direction == "up":
       new_board = np.rot90(self, -1)
       new_board, score, is_changed = new_board.right_move()
       new_board = np.rot90(new_board)
@@ -88,3 +89,13 @@ class Board(np.ndarray):
 
     return True
 
+  def random_play(self):
+    move_priority = random.shuffle([0, 1, 2, 3])
+
+    while len(move_priority):
+      move_index = move_priority.pop()
+      new_board, score, is_changed = self.make_move(MOVES[move_index])
+      if is_changed:
+        return new_board, score, True
+    
+    return self, 0, False
