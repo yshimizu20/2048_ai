@@ -54,6 +54,7 @@ class Game:
     return is_changed
 
   def merge_right(self):
+    score = 0
     is_changed = False
 
     for row in range(CELL_COUNT):
@@ -61,35 +62,42 @@ class Game:
         if self.board[row, col] == self.board[row, col - 1] and self.board[row, col] != 0:
           self.board[row, col] *= 2
           self.board[row, col - 1] = 0
+          score += self.board[row, col]
           is_changed = True
 
-    return is_changed
+    return score, is_changed
 
   def right_move(self):
     is_changed = self.push_right()
-    is_changed = self.merge_right() or is_changed
+    score, is_changed2 = self.merge_right()
+    is_changed = is_changed or is_changed2
     if is_changed:
       self.push_right()
     
-    return is_changed
+    return score, is_changed
 
   def make_move(self, direction):
     if direction == "right":
-      is_changed = self.right_move()
+      score, is_changed = self.right_move()
     elif direction == "up":
       self.board = np.rot90(self.board, -1)
-      is_changed = self.right_move()
+      score, is_changed = self.right_move()
       self.board = np.rot90(self.board)
     elif direction == "left":
       self.board = np.rot90(self.board, 2)
-      is_changed = self.right_move()
+      score, is_changed = self.right_move()
       self.board = np.rot90(self.board, 2)
     elif direction == "down":
       self.board = np.rot90(self.board)
-      is_changed = self.right_move()
+      score, is_changed = self.right_move()
       self.board = np.rot90(self.board, -1)
     else:
       raise ValueError("Invalid direction")
     
-    return is_changed
+    return score, is_changed
 
+  def best_move(self):
+    raise NotImplementedError
+
+  def evaluate_board(self):
+    raise NotImplementedError
