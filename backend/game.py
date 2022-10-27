@@ -44,3 +44,6 @@ class Game:
     self.board = new_board
 
     return score, is_changed
+
+  def calculate_score(self):
+    return self.board.calculate_score()

@@ -103,3 +103,6 @@ class Board(np.ndarray):
   
   def __copy__(self):
     return Board(self)
+
+  def calculate_score(self):
+    return np.sum(self), np.max(self)

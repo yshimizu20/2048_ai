@@ -16,10 +16,18 @@ class Policy():
       score, is_changed = self.game.make_move(direction)
       if not is_changed:
         print("Game over")
+        with open("results200_15.txt", "a") as f:
+          score, max_tile = self.game.calculate_score()
+          print(score, max_tile)
+          f.write(f"{score} {max_tile}\n")
         return
       is_changed = self.game.add_new_tile()
       if not is_changed:
         print("Game over")
+        with open("results200_15.txt", "a") as f:
+          score, max_tile = self.game.calculate_score()
+          print(score, max_tile)
+          f.write(f"{score} {max_tile}\n")
         return
 
   def best_move(self):
