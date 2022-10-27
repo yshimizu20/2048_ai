@@ -1,6 +1,6 @@
-from constants import *
-from game import Game
-from board import Board
+from .constants import *
+from .game import Game
+from .board import Board
 
 class Policy():
   def __init__(self):
