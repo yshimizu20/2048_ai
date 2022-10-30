@@ -57,8 +57,8 @@ class MonteCarloPolicy(Policy):
   def __init__(self):
     super().__init__()
 
-    self.searches_per_move = 200
-    self.search_length = 15
+    self.searches_per_move = 300
+    self.search_length = 3
 
   def best_move(self):
     scores = np.zeros(POSSIBLE_MOVES_COUNT)
@@ -112,7 +112,7 @@ class MonteCarloPolicyWithHeuristics(Policy):
         continue
 
       board.add_new_tile()
-      scores[MOVES.index(direction)] += self.evaluate_board(board) * 2000
+      scores[MOVES.index(direction)] += self.evaluate_board(board) * 200
       scores[MOVES.index(direction)] += score
       
       for _ in range(self.searches_per_move):
@@ -131,7 +131,6 @@ class MonteCarloPolicyWithHeuristics(Policy):
           move_iter += 1
       
     best_move = MOVES[np.argmax(scores)]
-    print(scores)
 
     return best_move
 
@@ -142,8 +141,31 @@ class MonteCarloPolicyWithHeuristics(Policy):
     if board is None:
       board = self.game.board
 
-    steady_increment_score = sum(board.evaluate_steady_increment())
-    return steady_increment_score
+    steady_increment_score = sum(self.evaluate_steady_increment(board))
+    empty_cells_score = self.evaluate_number_of_empty_cells(board)
+    return steady_increment_score + empty_cells_score * 10
+
+  def evaluate_number_of_empty_cells(self, board):
+    return np.sum(board == 0)
+
+  def evaluate_steady_increment(self, board):
+    up = down = left = right = 0
+
+    for row in range(CELL_COUNT):
+      for col in range(CELL_COUNT - 1):
+        if board[row, col] > board[row, col + 1]:
+          right += board[row, col]
+        if board[col, row] < board[col + 1, row]:
+          down += board[col + 1, row]
+      
+    for col in range(CELL_COUNT):
+      for row in range(CELL_COUNT - 1):
+        if board[row, col] < board[row + 1, col]:
+          up += board[row + 1, col]
+        if board[row, col] > board[row + 1, col]:
+          left += board[row, col]
+    
+    return -min(up, down), -min(left, right)
 
   def teardown(self):
     pass
