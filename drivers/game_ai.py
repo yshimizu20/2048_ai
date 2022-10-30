@@ -162,15 +162,15 @@ class MonteCarloPolicyWithHeuristics(Policy):
       for col in range(CELL_COUNT - 1):
         if board[row, col] > board[row, col + 1]:
           right += board[row, col]
-        if board[col, row] < board[col + 1, row]:
-          down += board[col + 1, row]
+        if board[row, col] < board[row, col + 1]:
+          left += board[row, col + 1]
       
     for col in range(CELL_COUNT):
       for row in range(CELL_COUNT - 1):
         if board[row, col] < board[row + 1, col]:
           up += board[row + 1, col]
         if board[row, col] > board[row + 1, col]:
-          left += board[row, col]
+          down += board[row, col]
     
     return -min(up, down), -min(left, right)
 
