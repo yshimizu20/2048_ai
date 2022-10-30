@@ -1,8 +1,8 @@
-from game_ai import MonteCarloPolicy, RandomPolicy
+from game_ai import *
 
 if __name__ == '__main__':
     # game = Game()
     # game.run()
 
-    policy = RandomPolicy()
+    policy = MonteCarloPolicyWithHeuristics()
     policy.run()

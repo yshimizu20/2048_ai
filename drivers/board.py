@@ -104,3 +104,22 @@ class Board(np.ndarray):
   
   def __copy__(self):
     return Board(self)
+
+  def evaluate_steady_increment(self):
+    up = down = left = right = 0
+
+    for row in range(CELL_COUNT):
+      for col in range(CELL_COUNT - 1):
+        if self[row, col] > self[row, col + 1]:
+          right += self[row, col]
+        if self[col, row] < self[col + 1, row]:
+          down += self[col + 1, row]
+      
+    for col in range(CELL_COUNT):
+      for row in range(CELL_COUNT - 1):
+        if self[row, col] < self[row + 1, col]:
+          up += self[row + 1, col]
+        if self[row, col] > self[row + 1, col]:
+          left += self[row, col]
+    
+    return -min(up, down), -min(left, right)
