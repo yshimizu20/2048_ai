@@ -156,23 +156,27 @@ class MonteCarloPolicyWithHeuristics(Policy):
     return np.sum(board == 0)
 
   def evaluate_steady_increment(self, board):
-    up = down = left = right = 0
+    updown = leftright = 0
 
     for row in range(CELL_COUNT):
+      left = right = 0
       for col in range(CELL_COUNT - 1):
         if board[row, col] > board[row, col + 1]:
           right += board[row, col]
         if board[row, col] < board[row, col + 1]:
           left += board[row, col + 1]
+      leftright -= min(left, right)
       
     for col in range(CELL_COUNT):
+      up = down = 0
       for row in range(CELL_COUNT - 1):
         if board[row, col] < board[row + 1, col]:
           up += board[row + 1, col]
         if board[row, col] > board[row + 1, col]:
           down += board[row, col]
+      updown -= min(up, down)
     
-    return -min(up, down), -min(left, right)
+    return updown, leftright
 
   def evaluate_proximity(self, board):
     ans = 0
