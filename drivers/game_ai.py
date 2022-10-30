@@ -168,26 +168,40 @@ class MonteCarloPolicyWithHeuristics(Policy):
           # conseq1 += 1
           # conseq2 = 0
           # left -= conseq1 ** 2 * 3
-        if board[row, col] < board[row, col + 1]:
+        elif board[row, col] < board[row, col + 1]:
           left += board[row, col + 1]
           # conseq1 = 0
           # conseq2 += 1
           # right -= conseq2 ** 2 * 3
+        else:
+          # conseq1 += 1
+          # conseq2 += 1
+          # left -= conseq1 ** 2 * 3
+          # right -= conseq2 ** 2 * 3
+          pass
       leftright -= min(left, right)
       
     for col in range(CELL_COUNT):
-      up = down = conseq1 = conseq2 = 0
+      up = down = 0
+      # # conseq1 = conseq2 = 0
+      
       for row in range(CELL_COUNT - 1):
         if board[row, col] < board[row + 1, col]:
           up += board[row + 1, col]
           # conseq1 += 1
           # conseq2 = 0
           # down -= (conseq1) ** 2 * 3
-        if board[row, col] > board[row + 1, col]:
+        elif board[row, col] > board[row + 1, col]:
           down += board[row, col]
           # conseq1 = 0
           # conseq2 += 1
           # up -= (conseq2) ** 2 * 3
+        else:
+          # conseq1 += 1
+          # conseq2 += 1
+          # up -= (conseq1) ** 2 * 3
+          # down -= (conseq2) ** 2 * 3
+          pass
       updown -= min(up, down)
     
     return updown, leftright
@@ -226,7 +240,7 @@ class MonteCarloPolicyWithHeuristics(Policy):
       scores[MOVES.index(direction)] += self.evaluate_board(new_board)
       if not new_board.add_new_tile():
         continue
-      scores[MOVES.index(direction)] += self.best_move_recursive(new_board, n-1)[1]
+      scores[MOVES.index(direction)] += self.best_move_recursive(new_board, n-1)[1] * 0.7
       
     best_move = MOVES[np.argmax(scores)]
 
