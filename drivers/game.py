@@ -1,5 +1,5 @@
-from .constants import *
-from .board import Board
+from constants import *
+from board import Board
 
 class Game:
   def __init__(self, win=WIN_VALUE):
@@ -40,7 +40,5 @@ class Game:
     return score, is_changed
 
   def random_play(self):
-    new_board, score, is_changed = self.board.random_play()
-    self.board = new_board
-
-    return score, is_changed
+    new_board, score, is_changed, direction = self.board.random_play()
+    return score, is_changed, direction

@@ -1,6 +1,6 @@
-from .constants import *
-from .game import Game
-from .board import Board
+from constants import *
+from game import Game
+from board import Board
 
 class Policy():
   def __init__(self):
@@ -10,7 +10,7 @@ class Policy():
   def run(self):
     while True:
       self.moves += 1
-      self.misc()
+      self.teardown()
       print(self.game.board)
       direction = self.best_move()
       score, is_changed = self.game.make_move(direction)
@@ -31,8 +31,26 @@ class Policy():
   def evaluate_board(self):
     raise NotImplementedError
 
-  def misc(self):
+  def teardown(self):
     raise NotImplementedError
+
+
+class RandomPolicy(Policy):
+  def __init__(self):
+    super().__init__()
+
+  def best_move(self):
+    score, is_changed, direction = self.game.random_play()
+    return direction
+
+  def evaluate_move(self, direction):
+    return 0
+
+  def evaluate_board(self):
+    return 0
+
+  def teardown(self):
+    pass
 
 
 class MonteCarloPolicy(Policy):
@@ -74,5 +92,7 @@ class MonteCarloPolicy(Policy):
   def evaluate_board(self):
     pass
 
-  def misc(self):
+  def teardown(self):
     pass
+
+

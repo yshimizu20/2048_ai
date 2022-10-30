@@ -1,5 +1,5 @@
 import numpy as np
-from .constants import *
+from constants import *
 import random
 
 class Board(np.ndarray):
@@ -74,6 +74,7 @@ class Board(np.ndarray):
       new_board, score, is_changed = new_board.right_move()
       new_board = np.rot90(new_board)
     else:
+      print("direction: ", direction)
       raise ValueError("Invalid direction")
     
     return new_board, score, is_changed
@@ -97,9 +98,9 @@ class Board(np.ndarray):
       move_index = move_priority.pop()
       new_board, score, is_changed = self.make_move(MOVES[move_index])
       if is_changed:
-        return new_board, score, True
+        return new_board, score, True, MOVES[move_index]
     
-    return self, 0, False
+    return self, 0, False, MOVES[move_index]
   
   def __copy__(self):
     return Board(self)
