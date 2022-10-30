@@ -102,7 +102,7 @@ class MonteCarloPolicyWithHeuristics(Policy):
     super().__init__()
 
     # self.searches_per_move = 200
-    # self.search_length = 10
+    # self.search_length = 3
 
   def best_move(self):
     # scores = np.zeros(POSSIBLE_MOVES_COUNT)
@@ -160,20 +160,34 @@ class MonteCarloPolicyWithHeuristics(Policy):
 
     for row in range(CELL_COUNT):
       left = right = 0
+      # conseq1 = conseq2 = 0
+      
       for col in range(CELL_COUNT - 1):
         if board[row, col] > board[row, col + 1]:
           right += board[row, col]
+          # conseq1 += 1
+          # conseq2 = 0
+          # left -= conseq1 ** 2 * 3
         if board[row, col] < board[row, col + 1]:
           left += board[row, col + 1]
+          # conseq1 = 0
+          # conseq2 += 1
+          # right -= conseq2 ** 2 * 3
       leftright -= min(left, right)
       
     for col in range(CELL_COUNT):
-      up = down = 0
+      up = down = conseq1 = conseq2 = 0
       for row in range(CELL_COUNT - 1):
         if board[row, col] < board[row + 1, col]:
           up += board[row + 1, col]
+          # conseq1 += 1
+          # conseq2 = 0
+          # down -= (conseq1) ** 2 * 3
         if board[row, col] > board[row + 1, col]:
           down += board[row, col]
+          # conseq1 = 0
+          # conseq2 += 1
+          # up -= (conseq2) ** 2 * 3
       updown -= min(up, down)
     
     return updown, leftright
@@ -185,13 +199,13 @@ class MonteCarloPolicyWithHeuristics(Policy):
       for col in range(CELL_COUNT):
         min_prox = np.inf
         if row:
-          min_prox = min(board[row, col], min_prox)
+          min_prox = min(abs(board[row, col] - board[row - 1, col]), min_prox)
         if row < CELL_COUNT - 1:
-          min_prox = min(board[row, col], min_prox)
+          min_prox = min(abs(board[row, col] - board[row + 1, col]), min_prox)
         if col:
-          min_prox = min(board[row, col], min_prox)
+          min_prox = min(abs(board[row, col] - board[row, col - 1]), min_prox)
         if col < CELL_COUNT - 1:
-          min_prox = min(board[row, col], min_prox)
+          min_prox = min(abs(board[row, col] - board[row, col + 1]), min_prox)
       ans += min_prox
     
     return -ans
