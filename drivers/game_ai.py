@@ -149,7 +149,8 @@ class MonteCarloPolicyWithHeuristics(Policy):
     steady_increment_score = sum(self.evaluate_steady_increment(board))
     empty_cells_score = self.evaluate_number_of_empty_cells(board)
     proximity_score = self.evaluate_proximity(board)
-    return steady_increment_score + empty_cells_score ** 2 + proximity_score * 10
+    
+    return steady_increment_score * 3 + empty_cells_score ** 2 + proximity_score
 
   def evaluate_number_of_empty_cells(self, board):
     return np.sum(board == 0)
