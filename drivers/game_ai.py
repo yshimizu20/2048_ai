@@ -136,7 +136,7 @@ class MonteCarloPolicyWithHeuristics(Policy):
 
     # return best_move
 
-    best_move, _ = self.best_move_recursive(self.game.board, 3)
+    best_move, _ = self.best_move_recursive(self.game.board, 3, 1.0)
     return best_move
 
   def evaluate_move(self, direction):
@@ -224,32 +224,71 @@ class MonteCarloPolicyWithHeuristics(Policy):
     
     return -ans
 
-  def best_move_recursive(self, board, n):
-    if n == 0:
-      return None, self.evaluate_board(board)
+  def best_move_recursive(self, board, n, prob):
+    # if n == 0:
+    #   return None, self.evaluate_board(board)
 
-    scores = np.zeros(POSSIBLE_MOVES_COUNT)
+    # scores = np.zeros(POSSIBLE_MOVES_COUNT)
+
+    # for i in range(4):
+    #   for j in range(4):
+    #     if board[i, j] != 0:
+    #       continue
+
+    #     for dice, ratio in zip([2, 4], [0.9, 0.1]):
+    #       new_board = board.copy()
+    #       new_board[i, j] = dice
+    #       for x, direction in enumerate(MOVES):
+    #         new_board, score, is_changed = new_board.make_move(direction)
+    #         if not is_changed:
+    #           scores[x] = -np.inf
+    #           break
+    #         res = self.best_move_recursive(new_board, n - 1, prob * ratio)[1]
+    #         scores[x] = min(scores[x], res * ratio + score)
+    #         if scores[x] == -np.inf:
+    #           break
+
+    # best_move = MOVES[np.argmax(scores)]
+    # if n == 3:
+    #   print(scores)
+
+    # return best_move, np.where(scores != -np.inf)[0].mean()
+    best_score = -np.inf
+    
+    for x, direction in enumerate(MOVES):
+      new_board, score, is_changed = board.make_move(direction)
+      if not is_changed:
+        continue
+      score = self.min_of_possible_moves(new_board, n - 1, prob)
+      if score > best_score:
+        best_score = score
+        best_move = direction
+    
+    return best_move, best_score
+
+  def min_of_possible_moves(self, board, n, prob):
+    if n == 0:
+      return self.evaluate_board(board)
+
+    scores = []
 
     for i in range(4):
       for j in range(4):
-        if board[i, j] == 0:
+        if board[i, j] != 0:
           continue
 
+        score = 0
+
         for dice, ratio in zip([2, 4], [0.9, 0.1]):
+          if ratio * prob < 0.1 and self.evaluate_number_of_empty_cells(board) > 5:
+            continue
           new_board = board.copy()
           new_board[i, j] = dice
-          for direction in MOVES:
-            new_board, score, is_changed = new_board.make_move(direction)
-            if not is_changed:
-              scores[MOVES.index(direction)] = -np.inf
-              continue
-            scores[MOVES.index(direction)] = min(scores[MOVES.index(direction)], self.best_move_recursive(new_board, n - 1)[1] * ratio)
-            if scores[MOVES.index(direction)] == -np.inf:
-              continue
-
-    best_move = MOVES[np.argmax(scores)]
-
-    return best_move, scores.max()
+          score += self.best_move_recursive(new_board, n , prob * ratio)[1]
+        
+        scores.append(score)
+    
+    return sum(scores) / len(scores)
 
   def teardown(self):
     pass
