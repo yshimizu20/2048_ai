@@ -4,5 +4,5 @@ if __name__ == '__main__':
     # game = Game()
     # game.run()
 
-    policy = MonteCarloPolicyWithHeuristics()
+    policy = MarkovPolicyWithHeuristics()
     policy.run()
