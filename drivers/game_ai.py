@@ -125,47 +125,47 @@ class MarkovPolicyWithHeuristics(Policy):
 
     for row in range(CELL_COUNT):
       left = right = 0
-      conseq1 = conseq2 = 0
+      # conseq1 = conseq2 = 0
       
       for col in range(CELL_COUNT - 1):
         if board[row, col] > board[row, col + 1]:
           right += board[row, col]
-          conseq1 += 1
-          conseq2 = 0
-          left -= conseq1 ** 2 * 3
+          # conseq1 += 1
+          # conseq2 = 0
+          # left -= conseq1 ** 2 * 3
         elif board[row, col] < board[row, col + 1]:
           left += board[row, col + 1]
-          conseq1 = 0
-          conseq2 += 1
-          right -= conseq2 ** 2 * 3
+          # conseq1 = 0
+          # conseq2 += 1
+          # right -= conseq2 ** 2 * 3
         else:
-          conseq1 += 1
-          conseq2 += 1
-          left -= conseq1 ** 2 * 3
-          right -= conseq2 ** 2 * 3
+          # conseq1 += 1
+          # conseq2 += 1
+          # left -= conseq1 ** 2 * 3
+          # right -= conseq2 ** 2 * 3
           pass
       leftright -= min(left, right)
       
     for col in range(CELL_COUNT):
       up = down = 0
-      conseq1 = conseq2 = 0
+      # # conseq1 = conseq2 = 0
       
       for row in range(CELL_COUNT - 1):
         if board[row, col] < board[row + 1, col]:
           up += board[row + 1, col]
-          conseq1 += 1
-          conseq2 = 0
-          down -= (conseq1) ** 2 * 3
+          # conseq1 += 1
+          # conseq2 = 0
+          # down -= (conseq1) ** 2 * 3
         elif board[row, col] > board[row + 1, col]:
           down += board[row, col]
-          conseq1 = 0
-          conseq2 += 1
-          up -= (conseq2) ** 2 * 3
+          # conseq1 = 0
+          # conseq2 += 1
+          # up -= (conseq2) ** 2 * 3
         else:
-          conseq1 += 1
-          conseq2 += 1
-          up -= (conseq1) ** 2 * 3
-          down -= (conseq2) ** 2 * 3
+          # conseq1 += 1
+          # conseq2 += 1
+          # up -= (conseq1) ** 2 * 3
+          # down -= (conseq2) ** 2 * 3
           pass
       updown -= min(up, down)
     
