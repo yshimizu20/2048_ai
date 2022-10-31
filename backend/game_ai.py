@@ -16,7 +16,7 @@ class Policy():
       score, is_changed = self.game.make_move(direction)
       if not is_changed:
         print("Game over")
-        with open("results200_15.txt", "a") as f:
+        with open("results800_10.txt", "a") as f:
           score, max_tile = self.game.calculate_score()
           print(score, max_tile)
           f.write(f"{score} {max_tile}\n")
@@ -24,7 +24,7 @@ class Policy():
       is_changed = self.game.add_new_tile()
       if not is_changed:
         print("Game over")
-        with open("results200_15.txt", "a") as f:
+        with open("results800_10.txt", "a") as f:
           score, max_tile = self.game.calculate_score()
           print(score, max_tile)
           f.write(f"{score} {max_tile}\n")
@@ -47,8 +47,8 @@ class MonteCarloPolicy(Policy):
   def __init__(self):
     super().__init__()
 
-    self.searches_per_move = 200
-    self.search_length = 15
+    self.searches_per_move = 800
+    self.search_length = 10
 
   def best_move(self):
     scores = np.zeros(POSSIBLE_MOVES_COUNT)
